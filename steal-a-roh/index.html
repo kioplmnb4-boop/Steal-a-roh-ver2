@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Steal a Roh</title>
+<link rel="stylesheet" href="css/style.css?v=5">
+</head>
+<body>
+
+<div id="hud">
+  <div>💰 돈 <b id="hMoney">0</b></div>
+  <div>📈 수입 <b id="hInc">0</b>/초</div>
+  <div>🏆 보유 <b id="hItems">0</b>개<span id="hCarry" style="color:#ff8a80"></span></div>
+  <div>⚡ 속도 <b id="hSpeed">10</b></div>
+  <div id="hComboRow" style="display:none">🔥 콤보 <b id="hCombo">0</b> <small id="hMult"></small></div>
+</div>
+
+<div id="shop" class="hide">
+  <button id="shopClose" type="button" aria-label="상점 닫기">✕</button>
+  <h3>🏃 러닝머신 상점 <small style="font-weight:400;color:#9fb3c8">(올라서면 속도↑)</small></h3>
+  <div id="shopRows"></div>
+</div>
+
+<div id="goal"></div>
+<button id="muteBtn" type="button">🔊 BGM</button>
+<button id="fxBtn" type="button">✨ 이펙트: 보통</button>
+<button id="bkBtn" type="button">💾 백업</button>
+<button id="mpBtn" type="button">👥 멀티</button>
+<button id="menuBtn" type="button" aria-label="메뉴">☰<span id="menuBadge"></span></button>
+<button id="shopBtn" type="button">🛒 상점</button>
+<div id="toasts"></div>
+<div id="netBox"><div id="netInfo"></div><div class="netBtns"><button id="netCopy" type="button">🔗 초대 링크 복사</button><button id="netLeave" type="button">나가기</button></div></div>
+<div id="prompt"></div>
+
+<div id="joyZone"><div id="joyBase"><div id="joyKnob"></div></div></div>
+<div id="btns">
+  <button id="btnSteal">훔치기</button>
+  <button id="btnJump">점프</button>
+  <button id="btnHit">👊</button>
+</div>
+
+<div id="mpModal">
+  <div class="bkPanel">
+    <h3>👥 멀티플레이 <small style="font-weight:400;color:#9fb3c8">(친구랑 같은 맵 · 최대 8명)</small></h3>
+    <div id="mpRoom">
+      <div id="mpRoomInfo"></div>
+      <div class="mpRoomBtns"><button id="mpRoomCopy" type="button">🔗 초대 링크 복사</button><button id="mpRoomLeave" type="button">🚪 방 나가기</button></div>
+    </div>
+    <div id="mpModeRow"><span>모드</span><button id="mpModeClassic" type="button">🏆 클래식</button><button id="mpModeRaid" type="button">🏠 기지 털기</button></div>
+    <div id="mpSlot"></div>
+    <button id="mpClose" type="button">닫기</button>
+  </div>
+</div>
+
+<div id="bkModal">
+  <div class="bkPanel">
+    <h3>💾 백업 슬롯 <small style="font-weight:400;color:#9fb3c8">(최대 3개)</small></h3>
+    <div class="bkSub">지금 진행 상황(돈·속도·러닝머신·수집품·스킨)을 슬롯에 저장하고, 나중에 골라서 불러올 수 있어요. 이 기기·브라우저에만 저장돼요.</div>
+    <div id="bkList"></div>
+    <div id="bkMsg"></div>
+    <button id="bkClose" type="button">닫기</button>
+  </div>
+</div>
+
+<div id="start">
+  <div class="panel">
+    <h1>🏆 Steal a Roh</h1>
+    <p class="sub">잠든 녀석들의 큰 손을 훔쳐 기지로 도망쳐라!</p>
+    <div id="modeRow"><button id="modeClassic" type="button">🏆 클래식</button><button id="modeRaid" type="button">🏠 기지 털기 <small>NEW</small></button></div>
+    <div id="modeDesc"></div>
+    <div class="steps">
+      <div class="step"><span>1</span>🏃 앞으로 달려 <b>받침대</b>로!</div>
+      <div class="step"><span>2</span>🖐️ <b>훔치기</b> (E / 버튼)</div>
+      <div class="step"><span>3</span>🏠 파란 <b>기지</b>까지 도망!</div>
+      <div class="step"><span>4</span>💰 돈으로 🏃 <b>러닝머신</b> 구매</div>
+    </div>
+    <div class="warn">⚠️ 쫓아오는 녀석이 멈추면 <b>빨간 조준선</b>! 발사되기 전에 <b>옆으로 피하거나 점프</b>하세요.</div>
+    <details><summary>자세한 규칙 보기</summary><ul>
+      <li>받침대에 가까이 가서 <b>훔치기(E)</b>를 누르면 큰 손을 머리 위에 듭니다.</li>
+      <li>훔치면 주인이 깨서 <b>울면서 쫓아와요</b>. 멀리 있는 녀석일수록 <b>더 빠르고, 더 귀한</b> 아이템을 갖고 있어요.</li>
+      <li><b>기지(안전존)</b>에 들어오면 녀석은 포기하고 자러 돌아갑니다. 기지의 아이템은 초당 돈을 벌어줘요.</li>
+      <li>기지에 닿기 전에 <b>잡히면 2초 기절</b>, 아이템은 받침대로 돌아가요.</li>
+      <li>쫓아오는 녀석은 <b>수상한 물건</b>을 몰다가 멈춰서 0.9초 차징 후 <b>빨간 조준선</b> 방향으로 발사! 발사 후엔 방향이 안 바뀌니 <b>옆으로 피하거나 점프</b>하세요.</li>
+      <li>기지의 <b>러닝머신</b>을 사서 그 위에 서 있으면 1.5초마다 속도가 올라요.</li>
+      <li>큰 손에는 <b>등급(색)</b>이 있어요: 일반 → 청동 → 은 → 황금 → … → 다이아몬드 → 오로라 → 레전드 → <b>신화</b>. 멀리 있는 녀석일수록 높은 등급!</li>
+      <li>훔칠 때마다 <b>보너스 돈</b>을 바로 받아요. (멀리 있는 녀석일수록 큼)</li>
+      <li>러닝머신 등급: 일반 → 희귀 → 레어 → 에픽 → 전설 → 신화 → 코스믹 → 시크릿 → 영원한 → 신성 → <b>타이탄</b></li>
+      <li>받침대의 아이템은 15초마다 다시 생겨요.</li>
+      <li>🔥 <b>콤보</b>: 잡히지 않고 연속으로 입금하면 훔칠 때 보너스가 최대 2배까지 늘어요.</li>
+      <li>⚔️ 수호자마다 <b>고유 스킬</b>이 있어요! 속도가 빠른 녀석일수록 스킬 <b>이펙트가 화려</b>해지고 <b>위력(범위·탄속·기절 시간·밀려남)</b>이 훨씬 세져요. 경고 표시가 뜨면 피하세요!</li>
+      <li>이름표 색: <span style="color:#9cff9c">초록</span>=내가 더 빠름 · <span style="color:#ffd180">노랑</span>=위험 · <span style="color:#ff8a80">빨강</span>=아직 무리</li>
+    </ul></details>
+    <div class="ctl">
+      <div class="pcOnly">⌨️ <b>WASD</b> 이동 · <b>Space</b> 점프 · <b>E</b> 훔치기 · <b>M</b> BGM 끄기/켜기 · <b>마우스 드래그</b> 시점 · 휠 줌</div>
+      <div class="mobileOnly">📱 왼쪽 <b>가상 조이스틱</b> 이동 · 오른쪽 <b>점프/훔치기</b> 버튼 · 화면 <b>드래그</b>로 시점</div>
+    </div>
+    <div id="saveInfo"></div>
+    <button id="startBtn">▶ 혼자 시작</button>
+    <div id="mpBox">
+      <div class="mpTitle">👥 친구랑 같은 맵에서 하기 <small>(최대 8명 · 인터넷 필요)</small></div>
+      <div class="mpRow"><span class="mpLab">내 이름</span><input id="mpName" maxlength="10" autocomplete="off"></div>
+      <button id="mpHost" type="button">🏠 방 만들기 <small>(내가 방장)</small></button>
+      <div class="mpRow"><input id="mpCode" maxlength="5" placeholder="방 코드 5자리" autocomplete="off" autocapitalize="characters"><button id="mpJoin" type="button">🚪 참가</button></div>
+      <div id="mpMsg"></div>
+      <div class="mpHelp">방장이 <b>방 만들기</b> → 나온 코드(또는 초대 링크)를 친구에게 → 친구가 코드 입력 후 <b>참가</b>. 돈·속도·수집품은 각자 저장돼요.</div>
+    </div>
+    <button id="bkOpen2" type="button">💾 백업 슬롯 (최대 3개)</button>
+    <button id="resetBtn">저장 데이터 지우고 새로 시작</button>
+  </div>
+</div>
+
+<script src="js/assets/images.js"></script>
+<script src="js/assets/hand.js"></script>
+<script src="js/assets/deposit.js"></script>
+<script src="js/assets/caught.js"></script>
+<script src="js/assets/cry.js"></script>
+<script src="js/assets/bgm.js"></script>
+<script src="js/assets/pface.js"></script>
+<script src="js/assets/skins.js"></script>
+<script src="js/assets/boss.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="js/game.js?v=5"></script>
+</body>
+</html>
