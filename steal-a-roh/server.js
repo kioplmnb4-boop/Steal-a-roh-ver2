@@ -23,39 +23,9 @@ const TYPES = {
 };
 const HIDDEN = new Set(['server.js', 'package.json', 'package-lock.json', 'node_modules', '.git']);
 
-/* ---------- 접속 통계 (서버가 켜진 뒤부터 · 서버가 잠들거나 재시작하면 0부터) ---------- */
-const STATS = { since: Date.now(), pageViews: 0, visitors: new Set(), roomsMade: 0, joins: 0, peakOnline: 0 };
-function kst(t) { return new Date(t).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul', hour12: false }); }
-function onlineNow() { let n = 0; rooms.forEach((r) => { n += 1 + r.clients.size; }); return n; }
-function visitorKey(req) {
-  const ip = String(req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
-  return crypto.createHash('sha256').update(ip + '|' + (req.headers['user-agent'] || '')).digest('hex').slice(0, 16);
-}
-function logLine(msg) { console.log('[' + kst(Date.now()) + '] ' + msg); }
-function statsPage() {
-  const roomRows = [];
-  rooms.forEach((r) => roomRows.push('<tr><td>' + r.code + '</td><td>' + (1 + r.clients.size) + '명</td><td>' + kst(r.made) + '</td></tr>'));
-  return '<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-    + '<meta http-equiv="refresh" content="10"><title>Steal a Roh 접속 통계</title><style>body{font-family:system-ui,sans-serif;background:#0f1d3a;color:#fff;padding:20px;line-height:1.7}'
-    + 'b{color:#ffd54a;font-size:1.2em}table{border-collapse:collapse;margin-top:8px}td,th{border:1px solid #456;padding:4px 10px}small{color:#9fb3c8}</style></head><body>'
-    + '<h2>📊 Steal a Roh 접속 통계</h2><small>서버가 켜진 때: ' + kst(STATS.since) + ' (무료 서버는 잠들면 다시 0부터 세요) · 10초마다 새로고침</small>'
-    + '<p>👀 게임 화면 연 횟수: <b>' + STATS.pageViews + '</b><br>🧑 다른 기기 수(대략): <b>' + STATS.visitors.size + '</b><br>'
-    + '🏠 만들어진 방: <b>' + STATS.roomsMade + '</b> · 🚪 참가 횟수: <b>' + STATS.joins + '</b><br>'
-    + '🟢 지금 멀티 중: <b>' + onlineNow() + '명</b> (방 ' + rooms.size + '개) · 📈 최대 동시 접속: <b>' + STATS.peakOnline + '명</b></p>'
-    + (roomRows.length ? '<table><tr><th>방 코드</th><th>인원</th><th>만든 시간</th></tr>' + roomRows.join('') + '</table>' : '<small>지금 열린 방이 없어요</small>')
-    + '</body></html>';
-}
-
 const server = http.createServer((req, res) => {
   let url;
   try { url = decodeURIComponent((req.url || '/').split('?')[0]); } catch (e) { res.writeHead(400); res.end(); return; }
-  if (url === '/stats') { res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' }); res.end(statsPage()); return; }
-  if (url === '/' || url === '/index.html') {
-    STATS.pageViews++;
-    const k = visitorKey(req), isNew = !STATS.visitors.has(k);
-    if (STATS.visitors.size < 100000) STATS.visitors.add(k);
-    logLine('👀 게임 접속' + (isNew ? ' (새 기기)' : '') + ' · 총 ' + STATS.pageViews + '회 / 기기 ' + STATS.visitors.size + '대');
-  }
   if (url === '/health') { res.writeHead(200, { 'Content-Type': 'text/plain' }); res.end('ok ' + rooms.size + ' rooms'); return; }
   if (url.endsWith('/')) url += 'index.html';
   const file = path.normalize(path.join(ROOT, url));
@@ -158,11 +128,9 @@ server.on('upgrade', (req, socket) => {
     if (m.op === 'host' && !room) {
       const code = newCode();
       if (!code) { ws.send({ op: 'err', msg: '서버가 바빠요. 잠시 후 다시 해 보세요' }); return; }
-      const r = { code, host: ws, clients: new Map(), made: Date.now() };
+      const r = { code, host: ws, clients: new Map() };
       rooms.set(code, r); ws.room = r; ws.isHost = true;
       ws.send({ op: 'hosted', code, id: ws.id });
-      STATS.roomsMade++; STATS.peakOnline = Math.max(STATS.peakOnline, onlineNow());
-      logLine('🏠 방 만듦 ' + code + ' · 지금 멀티 ' + onlineNow() + '명');
     } else if (m.op === 'join' && !room) {
       const code = String(m.code || '').toUpperCase();
       const r = rooms.get(code);
@@ -170,8 +138,6 @@ server.on('upgrade', (req, socket) => {
       if (r.clients.size + 1 >= MAX_PLAYERS) { ws.send({ op: 'err', msg: '방이 꽉 찼어요 (최대 ' + MAX_PLAYERS + '명)' }); return; }
       r.clients.set(ws.id, ws); ws.room = r;
       ws.send({ op: 'joined', code, id: ws.id, host: r.host.id });
-      STATS.joins++; STATS.peakOnline = Math.max(STATS.peakOnline, onlineNow());
-      logLine('🚪 참가 ' + code + ' (' + (1 + r.clients.size) + '명) · 지금 멀티 ' + onlineNow() + '명');
       r.host.send({ op: 'peer', id: ws.id });
     } else if (room && ws.isHost && m.op === 'to') {
       const c = room.clients.get(m.id); if (c) c.send({ op: 'm', m: m.m });
@@ -188,11 +154,9 @@ server.on('upgrade', (req, socket) => {
     const r = ws.room; if (!r) return;
     if (ws.isHost) {
       rooms.delete(r.code);
-      logLine('📴 방 닫힘 ' + r.code + ' · 지금 멀티 ' + (onlineNow() - r.clients.size) + '명');
       r.clients.forEach((c) => { c.send({ op: 'closed' }); c.close(); });
     } else if (r.clients.get(ws.id) === ws) {
       r.clients.delete(ws.id);
-      logLine('👋 나감 ' + r.code + ' (' + (1 + r.clients.size) + '명 남음)');
       r.host.send({ op: 'left', id: ws.id });
     }
   };
