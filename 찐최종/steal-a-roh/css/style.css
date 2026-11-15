@@ -1,0 +1,199 @@
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;height:100%;overflow:hidden;background:#0a1330;font-family:"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;color:#fff;user-select:none;-webkit-user-select:none;touch-action:none}
+  canvas{display:block;touch-action:none}
+  #hud{position:fixed;left:10px;top:10px;background:rgba(0,0,0,.5);padding:8px 12px;border-radius:10px;font-size:14px;line-height:1.65;pointer-events:none;min-width:150px;border:1px solid rgba(255,255,255,.12)}
+  #hud b{color:#ffd54a}
+  #shop{position:fixed;right:10px;top:10px;width:260px;max-height:calc(100vh - 20px);overflow-y:auto;background:rgba(10,20,40,.82);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:10px;font-size:13px;backdrop-filter:blur(4px)}
+  #shop.hide{display:none}
+  #shop h3{margin:0 0 8px;font-size:15px;color:#7fd3ff}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:6px 0;border-top:1px solid rgba(255,255,255,.1)}
+  .row .nm{flex:1;line-height:1.3}
+  .row .nm small{color:#9fb3c8;display:block}
+  .row button{background:#2e7d32;color:#fff;border:0;border-radius:8px;padding:7px 8px;font-weight:700;font-size:12px;min-width:76px;cursor:pointer;touch-action:manipulation}
+  .row button:disabled{background:#455a64;color:#90a4ae;cursor:not-allowed}
+  #muteBtn{position:fixed;left:10px;top:138px;z-index:12;background:rgba(0,0,0,.5);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:6px 12px;font-size:13px;cursor:pointer;touch-action:manipulation}
+  #fxBtn{position:fixed;left:10px;top:176px;z-index:12;background:rgba(0,0,0,.5);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:6px 12px;font-size:13px;cursor:pointer;touch-action:manipulation}
+  #goal{position:fixed;left:50%;top:10px;transform:translateX(-50%);max-width:min(560px,52vw);background:rgba(0,0,0,.58);border:2px solid #ffd54a;border-radius:14px;padding:7px 14px;font-size:14px;line-height:1.45;text-align:center;pointer-events:none;z-index:11}
+  #goal b{color:#ffd54a}
+  #goal.run{border-color:#ff5252;animation:pulse .8s ease-in-out infinite alternate}
+  @keyframes pulse{from{box-shadow:0 0 0 rgba(255,82,82,0)}to{box-shadow:0 0 16px rgba(255,82,82,.8)}}
+  body.touch #goal{top:auto;bottom:10px;max-width:calc(var(--vw)*56);font-size:12px;padding:5px 10px}
+  #start .steps{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 10px}
+  #start .step{background:rgba(255,255,255,.09);border-radius:10px;padding:9px 10px;font-size:14.5px;line-height:1.35}
+  #start .step span{display:inline-block;width:22px;height:22px;line-height:22px;text-align:center;border-radius:50%;background:#ffd54a;color:#3e2300;font-weight:900;margin-right:6px}
+  #start .warn{background:rgba(255,82,82,.16);border:1px solid rgba(255,82,82,.5);border-radius:10px;padding:8px 10px;font-size:14px;margin-bottom:10px}
+  #start details{margin-bottom:12px;font-size:13.5px;color:#cfd8dc}
+  #start summary{cursor:pointer;color:#7fd3ff;margin-bottom:6px}
+  #toasts{position:fixed;left:50%;top:64px;transform:translateX(-50%);display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none;z-index:20;width:90vw}
+  .toast{background:rgba(0,0,0,.75);padding:8px 16px;border-radius:20px;font-size:15px;font-weight:700;animation:tin .25s ease-out,tout .4s ease-in 2.1s forwards;border:2px solid #fff;text-align:center}
+  .toast.good{border-color:#69f0ae;color:#b9f6ca}
+  .toast.bad{border-color:#ff5252;color:#ffcdd2}
+  .toast.warn{border-color:#ffd740;color:#ffe57f}
+  @keyframes tin{from{transform:translateY(-12px);opacity:0}to{transform:none;opacity:1}}
+  @keyframes tout{to{opacity:0;transform:translateY(-8px)}}
+  #prompt{position:fixed;left:50%;bottom:22%;transform:translateX(-50%);background:rgba(0,0,0,.6);padding:8px 18px;border-radius:20px;font-size:16px;font-weight:700;border:2px solid #ffd54a;display:none;pointer-events:none}
+  .float{position:fixed;font-weight:900;font-size:22px;pointer-events:none;z-index:15;text-shadow:0 2px 4px #000,0 0 8px #000;animation:fl 1.2s ease-out forwards;transform:translate(-50%,-50%)}
+  .float.spd{color:#7fffd4}
+  .float.money{color:#ffd54a}
+  @keyframes fl{from{opacity:1;margin-top:0}to{opacity:0;margin-top:-90px}}
+  #start{position:fixed;inset:0;background:radial-gradient(ellipse at center,rgba(10,30,70,.92),rgba(3,8,20,.97));z-index:50;display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
+  #start .panel{max-width:560px;width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.2);border-radius:18px;padding:22px 24px}
+  #start h1{margin:0 0 4px;font-size:32px;color:#ffd54a;text-align:center;text-shadow:0 3px 0 #8a6d00}
+  #start p.sub{margin:0 0 14px;text-align:center;color:#9fd3ff}
+  #start ul{margin:0 0 14px;padding-left:20px;line-height:1.6;font-size:14.5px}
+  #start .ctl{background:rgba(0,0,0,.3);border-radius:10px;padding:8px 12px;font-size:13.5px;line-height:1.6;margin-bottom:14px}
+  #startBtn{display:block;width:100%;padding:14px;font-size:20px;font-weight:900;border:0;border-radius:12px;background:linear-gradient(#ffd54a,#ffa000);color:#3e2300;cursor:pointer;touch-action:manipulation}
+  #resetBtn{display:block;margin:10px auto 0;background:none;border:0;color:#90a4ae;text-decoration:underline;font-size:13px;cursor:pointer}
+  #saveInfo{text-align:center;font-size:13px;color:#b9f6ca;margin-bottom:8px}
+  #bkBtn{position:fixed;left:10px;top:214px;z-index:12;background:rgba(0,0,0,.5);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:6px 12px;font-size:13px;cursor:pointer;touch-action:manipulation}
+  #bkOpen2{display:block;width:100%;margin:10px 0 0;padding:10px;font-size:15px;font-weight:700;border:1px solid rgba(127,211,255,.6);border-radius:12px;background:rgba(127,211,255,.12);color:#bfe8ff;cursor:pointer;touch-action:manipulation}
+  #bkModal{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;padding:14px}
+  #bkModal .bkPanel{width:100%;max-width:520px;max-height:92vh;overflow-y:auto;background:#0f1d3a;border:1px solid rgba(255,255,255,.25);border-radius:16px;padding:16px 18px}
+  #bkModal h3{margin:0 0 4px;font-size:18px;color:#7fd3ff}
+  #bkModal .bkSub{font-size:12.5px;color:#9fb3c8;margin-bottom:10px;line-height:1.5}
+  .bkSlot{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 0;border-top:1px solid rgba(255,255,255,.12)}
+  .bkInfo{flex:1;line-height:1.4;font-size:13.5px;min-width:0}
+  .bkInfo small{display:block;color:#b0c4d8;font-size:12px}
+  .bkInfo small.empty{color:#78909c}
+  .bkBtns{display:flex;gap:5px;flex-shrink:0}
+  .bkBtns button{border:0;border-radius:8px;padding:8px 9px;font-weight:700;font-size:12px;color:#fff;cursor:pointer;touch-action:manipulation;background:#1565c0}
+  .bkBtns button[data-a=load]{background:#2e7d32}
+  .bkBtns button[data-a=del]{background:#b71c1c}
+  .bkBtns button.arm{background:#ff6f00!important;box-shadow:0 0 8px #ffa000}
+  .bkBtns button:disabled{background:#455a64!important;color:#90a4ae;cursor:not-allowed;box-shadow:none}
+  #bkMsg{min-height:20px;margin-top:8px;font-size:13px;text-align:center;color:#b9f6ca}
+  #bkClose{display:block;width:100%;margin-top:6px;padding:10px;border:0;border-radius:10px;background:rgba(255,255,255,.14);color:#fff;font-weight:700;font-size:14px;cursor:pointer}
+  .mobileOnly{display:none}
+  body.touch .mobileOnly{display:block}
+  body.touch .pcOnly{display:none}
+  #joyZone,#btns{display:none}
+  body.touch #joyZone{display:block;position:fixed;left:0;bottom:0;width:calc(var(--vw)*46);height:calc(var(--vh)*55);z-index:10;touch-action:none}
+  body.touch #btns{display:block}
+  #joyBase{position:fixed;left:28px;bottom:40px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.35);pointer-events:none}
+  #joyKnob{position:absolute;left:50%;top:50%;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;background:rgba(255,255,255,.55)}
+  #btns button{position:fixed;border-radius:50%;border:3px solid rgba(255,255,255,.6);color:#fff;font-weight:900;touch-action:none;z-index:10}
+  #btnJump{right:26px;bottom:44px;width:84px;height:84px;background:rgba(30,136,229,.65);font-size:16px}
+  #btnSteal{right:120px;bottom:100px;width:92px;height:92px;background:rgba(229,57,53,.6);font-size:17px}
+  #btnSteal.ready{background:rgba(255,193,7,.9);color:#3e2300;box-shadow:0 0 18px #ffd54a}
+  @media (max-width:700px){
+    #shop{width:200px;font-size:11.5px;padding:7px;top:8px;right:8px}
+    .row button{min-width:62px;padding:6px 4px;font-size:11px}
+    #hud{font-size:12.5px;min-width:128px;padding:6px 9px}
+  }
+
+/* 👥 멀티플레이 */
+#mpBox{margin-top:12px;background:rgba(79,195,247,.1);border:1px solid rgba(79,195,247,.45);border-radius:12px;padding:10px 12px}
+#mpBox .mpTitle{font-weight:800;color:#bfe8ff;margin-bottom:8px;font-size:15px}
+#mpBox .mpTitle small{font-weight:400;color:#9fb3c8}
+#mpBox .mpRow{display:flex;gap:6px;align-items:center;margin-bottom:7px}
+#mpBox .mpLab{font-size:13px;color:#cfd8dc;white-space:nowrap}
+#mpBox input{flex:1;min-width:0;padding:9px 10px;border-radius:9px;border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.35);color:#fff;font-size:15px}
+#mpCode{text-transform:uppercase;letter-spacing:3px;font-weight:800}
+#mpBox button{border:0;border-radius:10px;padding:10px 14px;font-weight:800;font-size:15px;cursor:pointer;touch-action:manipulation}
+#mpHost{display:block;width:100%;margin-bottom:7px;background:linear-gradient(#4fc3f7,#1e88e5);color:#04213a}
+#mpJoin{background:linear-gradient(#81c784,#388e3c);color:#06210a}
+#mpBox button:disabled{opacity:.5;cursor:default}
+#mpMsg{font-size:13px;min-height:16px;margin-bottom:4px}
+#mpBox .mpHelp{font-size:12px;color:#9fb3c8;line-height:1.5}
+#netBox{display:none;position:fixed;left:10px;bottom:10px;z-index:13;background:rgba(10,30,70,.78);border:1px solid rgba(127,211,255,.55);border-radius:10px;padding:7px 10px;font-size:13px;max-width:260px}
+#netBox small{display:block;color:#9fb3c8;font-size:11.5px;margin-top:2px;word-break:break-all}
+#netBox .netBtns{display:flex;gap:6px;margin-top:6px}
+#netBox button{flex:1;border:0;border-radius:8px;padding:5px 6px;font-size:12px;font-weight:700;cursor:pointer;background:#1e88e5;color:#fff;touch-action:manipulation}
+#netBox #netLeave{flex:0 0 auto;background:#546e7a}
+body.touch #netBox{bottom:calc(var(--vh)*57);font-size:11.5px;max-width:200px;padding:5px 8px}
+
+/* =========================================================
+   📱 모바일(터치) 화면 최적화
+   ========================================================= */
+#menuBtn,#shopBtn,#shopClose{display:none}
+body.touch #menuBtn{display:block;position:fixed;right:calc(8px + var(--sar));top:calc(8px + var(--sat));z-index:25;min-width:44px;height:44px;padding:0 10px;border-radius:12px;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.55);color:#fff;font-size:20px;font-weight:900;touch-action:manipulation}
+#menuBadge{font-size:12px;margin-left:4px;color:#7fd3ff;vertical-align:middle}
+body.touch.menu #menuBtn{background:#1e88e5}
+/* 메뉴 안에 BGM·이펙트·백업·방 정보 */
+body.touch #muteBtn,body.touch #fxBtn,body.touch #bkBtn{display:none;left:auto;right:calc(8px + var(--sar));z-index:25;min-width:150px;padding:10px 14px;font-size:14px;text-align:left;background:rgba(10,20,40,.92)}
+body.touch.menu #muteBtn,body.touch.menu #fxBtn,body.touch.menu #bkBtn{display:block}
+body.touch #muteBtn{top:calc(60px + var(--sat))}
+body.touch #fxBtn{top:calc(106px + var(--sat))}
+body.touch #bkBtn{top:calc(152px + var(--sat))}
+body.touch:not(.menu) #netBox{display:none!important}
+body.touch.menu #netBox{left:auto;bottom:auto;right:calc(8px + var(--sar));top:calc(198px + var(--sat));z-index:25;max-width:min(260px,calc(var(--vw)*70));font-size:12.5px;padding:8px 10px;background:rgba(10,20,40,.94)}
+body.touch #netBox button{padding:8px 6px;font-size:12.5px}
+/* HUD: 작고 촘촘하게 */
+body.touch #hud{left:calc(8px + var(--sal));top:calc(8px + var(--sat));font-size:12px;line-height:1.45;padding:5px 9px;min-width:0;max-width:calc(calc(var(--vw)*100) - 80px);display:flex;flex-wrap:wrap;gap:0 10px}
+body.touch #hud small{font-size:10.5px}
+/* 상점: 버튼으로 열고 닫는 옆 패널 */
+body.touch #shopBtn{position:fixed;right:calc(8px + var(--sar));top:calc(60px + var(--sat));z-index:14;padding:10px 14px;border-radius:12px;border:2px solid #ffd54a;background:rgba(46,125,50,.92);color:#fff;font-size:15px;font-weight:900;touch-action:manipulation;animation:shopGlow 1.2s ease-in-out infinite alternate}
+@keyframes shopGlow{from{box-shadow:0 0 0 rgba(255,213,74,0)}to{box-shadow:0 0 14px rgba(255,213,74,.9)}}
+body.touch.menu #shopBtn{display:none!important}
+body.touch:not(.shopOpen) #shop{display:none}
+body.touch.shopOpen #shop{right:0;top:0;bottom:0;width:min(340px,calc(var(--vw)*90));max-height:none;border-radius:14px 0 0 14px;z-index:30;padding:12px 12px calc(16px + var(--sab));padding-right:calc(12px + var(--sar));font-size:13px;-webkit-overflow-scrolling:touch;touch-action:pan-y;overscroll-behavior:contain}
+body.touch #shopClose{display:block;position:sticky;top:0;float:right;z-index:2;width:40px;height:40px;margin:-4px -4px 0 6px;border:0;border-radius:10px;background:rgba(255,255,255,.18);color:#fff;font-size:18px;font-weight:900;touch-action:manipulation}
+body.touch.shopOpen .row button{min-width:84px;padding:10px 8px;font-size:13px}
+/* 목표·알림·안내: 조작 버튼과 안 겹치게 위쪽으로 */
+body.touch #goal{top:calc(8px + var(--sat));bottom:auto;max-width:calc(var(--vw)*44);font-size:12px;padding:5px 10px;line-height:1.4}
+body.touch #toasts{top:calc(64px + var(--sat));width:min(560px,calc(var(--vw)*70));gap:4px}
+body.touch .toast{font-size:12.5px;padding:5px 12px;border-width:1.5px;line-height:1.35}
+body.touch .toast:nth-last-child(n+4){display:none}
+body.touch #prompt{bottom:auto;top:42%;font-size:14px;padding:7px 14px;max-width:calc(var(--vw)*86);text-align:center}
+body.touch #dgHud{left:calc(8px + var(--sal))!important;top:auto!important;bottom:calc(190px + var(--sab))!important;width:170px!important;font-size:12px!important;padding:6px 8px!important}
+body.touch #dgExit{padding:8px!important}
+/* 조이스틱·버튼: 화면 가장자리(노치) 피하기 */
+body.touch #joyBase{left:calc(24px + var(--sal));bottom:calc(32px + var(--sab))}
+body.touch #btnJump{right:calc(22px + var(--sar));bottom:calc(36px + var(--sab))}
+body.touch #btnSteal{right:calc(116px + var(--sar));bottom:calc(92px + var(--sab))}
+body.touch input{font-size:16px!important}
+/* 세로 화면 */
+  body.touch.pt #goal{top:auto;bottom:calc(196px + var(--sab));max-width:calc(var(--vw)*90)}
+  body.touch.pt #toasts{top:calc(112px + var(--sat));width:calc(var(--vw)*92)}
+  body.touch.pt #hud{max-width:calc(calc(var(--vw)*100) - 150px)}
+  body.touch.pt #prompt{top:auto;bottom:calc(244px + var(--sab))}
+  body.touch.pt #dgHud{bottom:calc(246px + var(--sab))!important}
+
+/* 가로 화면: HUD는 왼쪽에 좁게, 목표는 가운데 */
+  body.touch.ls #hud{max-width:calc(var(--vw)*30)}
+  body.touch.ls #goal{max-width:calc(var(--vw)*38)}
+  body.touch.ls #toasts{width:min(500px,calc(var(--vw)*46))}
+
+/* 낮은 가로 화면 (휴대폰 가로) */
+  body.touch.ls.short #joyBase{width:112px;height:112px}
+  body.touch.ls.short #btnJump{width:74px;height:74px;font-size:14px}
+  body.touch.ls.short #btnSteal{width:80px;height:80px;font-size:15px;right:calc(104px + var(--sar));bottom:calc(76px + var(--sab))}
+  body.touch.ls.short #dgHud{top:calc(8px + var(--sat))!important;bottom:auto!important;left:auto!important;right:calc(64px + var(--sar))!important;width:160px!important}
+  body.short #start{align-items:flex-start}
+
+/* 작은 화면 시작 화면 */
+@media (max-width:500px),(max-height:500px){
+  #start{padding:10px}
+  #start .panel{padding:14px 14px}
+  #start h1{font-size:26px}
+  #start .step{font-size:13px;padding:7px 8px}
+  #start .warn,#start .ctl{font-size:12.5px}
+  #startBtn{padding:12px;font-size:18px}
+}
+
+/* 📱 휴대폰을 세로로 들고 있을 때: 화면 전체를 90° 돌려서 가로 화면으로 */
+:root{--vw:1vw;--vh:1vh;--sat:env(safe-area-inset-top);--sar:env(safe-area-inset-right);--sab:env(safe-area-inset-bottom);--sal:env(safe-area-inset-left)}
+body.rot{position:fixed;left:0;top:0;transform-origin:0 0;transform:rotate(90deg) translateY(-100%);
+  --sat:env(safe-area-inset-right);--sar:env(safe-area-inset-bottom);--sab:env(safe-area-inset-left);--sal:env(safe-area-inset-top)}
+body.rot #shop,body.rot #start,body.rot .bkPanel{touch-action:pan-x pan-y}
+
+/* 👥 멀티 버튼 (PC: 왼쪽 4번째 · 모바일: ☰ 메뉴 4번째) */
+#mpBtn{position:fixed;left:10px;top:252px;z-index:12;background:rgba(0,0,0,.5);color:#fff;border:1px solid rgba(127,211,255,.5);border-radius:10px;padding:6px 12px;font-size:13px;cursor:pointer;touch-action:manipulation}
+body.touch #mpBtn{display:none;left:auto;right:calc(8px + var(--sar));top:calc(198px + var(--sat));z-index:25;min-width:150px;padding:10px 14px;font-size:14px;text-align:left;background:rgba(10,20,40,.92)}
+body.touch.menu #mpBtn{display:block}
+body.touch.menu #netBox{top:calc(244px + var(--sat))!important}
+#mpModal{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;padding:14px}
+#mpModal .bkPanel{width:100%;max-width:480px;max-height:92%;overflow-y:auto;background:#0f1d3a;border:1px solid rgba(255,255,255,.25);border-radius:16px;padding:16px 18px;touch-action:pan-x pan-y}
+#mpModal h3{margin:0 0 10px;font-size:18px;color:#7fd3ff}
+#mpModal #mpBox{margin-top:0}
+#mpRoom{display:none;background:rgba(79,195,247,.1);border:1px solid rgba(79,195,247,.45);border-radius:12px;padding:12px;font-size:14px;line-height:1.6}
+#mpRoom small{display:block;color:#9fb3c8;font-size:12.5px;margin-top:4px;word-break:break-all}
+#mpRoom .mpBig{font-size:20px;letter-spacing:3px;color:#ffd54a}
+#mpRoom .mpRoomBtns{display:flex;gap:8px;margin-top:10px}
+#mpRoom .mpRoomBtns button{flex:1;border:0;border-radius:10px;padding:10px;font-weight:800;font-size:14px;cursor:pointer;touch-action:manipulation;background:#1e88e5;color:#fff}
+#mpRoom #mpRoomLeave{background:#c62828}
+#mpClose{display:block;width:100%;margin-top:10px;padding:10px;border:0;border-radius:10px;background:rgba(255,255,255,.14);color:#fff;font-weight:700;font-size:14px;cursor:pointer;touch-action:manipulation}
+#mpModal #mpBox .mpTitle{display:none}
+body.short #mpModal .mpHelp{display:none}
+body.short #mpModal .bkPanel{padding:12px 14px}
+body.short #mpModal h3{margin-bottom:6px;font-size:16px}

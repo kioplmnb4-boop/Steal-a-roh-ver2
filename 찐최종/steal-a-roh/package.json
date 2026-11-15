@@ -1,0 +1,14 @@
+{
+  "name": "steal-a-roh",
+  "version": "1.0.0",
+  "description": "Steal a Roh - 멀티플레이 중계 서버 + 게임",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "UNLICENSED",
+  "private": true
+}
