@@ -12,7 +12,7 @@ const crypto = require('crypto');
 
 const PORT = process.env.PORT || 8080;
 const ROOT = process.env.STATIC_DIR || __dirname;
-const MAX_PLAYERS = 8;
+const MAX_PLAYERS = 4; // 기지 칸 수와 같게 (한 사람당 기지 1칸)
 const MAX_MSG = 256 * 1024;
 
 /* ---------- 게임 파일 보여주기 ---------- */

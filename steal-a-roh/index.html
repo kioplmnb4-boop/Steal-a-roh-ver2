@@ -32,6 +32,9 @@
 <div id="toasts"></div>
 <div id="netBox"><div id="netInfo"></div><div class="netBtns"><button id="netCopy" type="button">🔗 초대 링크 복사</button><button id="netLeave" type="button">나가기</button></div></div>
 <div id="prompt"></div>
+<div id="chatBox"><div id="chatLog"></div><input id="chatIn" type="text" maxlength="60" placeholder="채팅 입력 · Enter 보내기 · Esc 닫기" autocomplete="off"></div>
+<button id="chatBtn" type="button">💬 채팅</button>
+<div id="verTag">v8 · 1인 1기지(4칸)</div>
 
 <div id="joyZone"><div id="joyBase"><div id="joyKnob"></div></div></div>
 <div id="btns">
@@ -41,7 +44,7 @@
 
 <div id="mpModal">
   <div class="bkPanel">
-    <h3>👥 멀티플레이 <small style="font-weight:400;color:#9fb3c8">(친구랑 같은 맵 · 최대 8명)</small></h3>
+    <h3>👥 멀티플레이 <small style="font-weight:400;color:#9fb3c8">(친구랑 같은 맵 · 최대 4명 · 1인 1기지)</small></h3>
     <div id="mpRoom">
       <div id="mpRoomInfo"></div>
       <div class="mpRoomBtns"><button id="mpRoomCopy" type="button">🔗 초대 링크 복사</button><button id="mpRoomLeave" type="button">🚪 방 나가기</button></div>
@@ -94,7 +97,7 @@
     <div id="saveInfo"></div>
     <button id="startBtn">▶ 혼자 시작</button>
     <div id="mpBox">
-      <div class="mpTitle">👥 친구랑 같은 맵에서 하기 <small>(최대 8명 · 인터넷 필요)</small></div>
+      <div class="mpTitle">👥 친구랑 같은 맵에서 하기 <small>(최대 4명 · 한 사람당 기지 1칸 · 인터넷 필요)</small></div>
       <div class="mpRow"><span class="mpLab">내 이름</span><input id="mpName" maxlength="10" autocomplete="off"></div>
       <button id="mpHost" type="button">🏠 방 만들기 <small>(내가 방장)</small></button>
       <div class="mpRow"><input id="mpCode" maxlength="5" placeholder="방 코드 5자리" autocomplete="off" autocapitalize="characters"><button id="mpJoin" type="button">🚪 참가</button></div>
@@ -115,8 +118,9 @@
 <script src="js/assets/pface.js"></script>
 <script src="js/assets/skins.js"></script>
 <script src="js/assets/boss.js"></script>
+<script src="js/assets/fall.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
-<script src="js/game.js?v=4"></script>
+<script src="js/game.js?v=8"></script>
 </body>
 </html>

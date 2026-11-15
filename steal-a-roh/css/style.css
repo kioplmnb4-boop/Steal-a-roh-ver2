@@ -197,3 +197,21 @@ body.touch.menu #netBox{top:calc(244px + var(--sat))!important}
 body.short #mpModal .mpHelp{display:none}
 body.short #mpModal .bkPanel{padding:12px 14px}
 body.short #mpModal h3{margin-bottom:6px;font-size:16px}
+
+/* ---------- 채팅 ---------- */
+#chatBox{position:fixed;left:10px;bottom:120px;z-index:16;width:min(360px,60vw);pointer-events:none}
+#chatLog{display:flex;flex-direction:column;gap:3px;font-size:14px}
+.chatLine{background:rgba(0,0,0,.55);padding:4px 9px;border-radius:8px;max-width:100%;word-break:break-all;transition:opacity 1s;align-self:flex-start}
+.chatLine b{color:#7fd3ff}
+.chatLine.me b{color:#ffd54a}
+.chatLine.old{opacity:0}
+#chatBox.open .chatLine.old{opacity:.85}
+#chatIn{display:none;margin-top:5px;width:100%;box-sizing:border-box;padding:8px 10px;border-radius:9px;border:2px solid #ffd54a;background:rgba(10,20,40,.92);color:#fff;font-size:15px;pointer-events:auto;outline:none}
+#chatBox.open #chatIn{display:block}
+#chatBtn{display:none;position:fixed;left:10px;bottom:90px;z-index:16;border:0;border-radius:9px;padding:5px 10px;font-size:12.5px;font-weight:700;background:rgba(10,30,70,.85);color:#fff;cursor:pointer;touch-action:manipulation}
+body.inroom #chatBtn{display:block}
+body.touch #chatBox{left:calc(8px + var(--sal));bottom:auto;top:calc(var(--vh)*30);width:min(320px,calc(var(--vw)*55))}
+body.touch #chatLog{font-size:12.5px}
+body.touch #chatBtn{left:auto;bottom:auto;right:calc(8px + var(--sar));top:calc(112px + var(--sat));padding:9px 12px;font-size:14px}
+#verTag{position:fixed;right:8px;bottom:4px;z-index:5;font-size:10.5px;color:rgba(255,255,255,.45);pointer-events:none}
+body.touch #verTag{bottom:calc(2px + var(--sab));right:calc(6px + var(--sar))}
